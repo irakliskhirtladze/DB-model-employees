@@ -52,8 +52,8 @@ class Employee(object):
         return f'[{self.name}, {self.surname}, {self.age}, {self.id}]'
 
     def __eq__(self, other):
-        if self == other:
-            return True
+        if isinstance(other, Employee):
+            return other.age == self.age
         return False
 
     def create(self):
