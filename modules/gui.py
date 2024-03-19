@@ -42,25 +42,32 @@ class DbApp(QMainWindow):
     def search_employee(self):
         """Search employee in the database based on the provided parameters
         and display the results in a table"""
+        # Clear any label text if it exists
+        self.ui.label_11.setText("")
+        # Get search parameters from input fields
         name = self.ui.lineEdit_5.text()
         surname = self.ui.lineEdit_6.text()
         age_raw = self.ui.lineEdit_7.text()
-        age = int(age_raw) if age_raw.isdigit() else None
+        age = int(age_raw) if age_raw.isdigit() else ''
         id_raw = self.ui.lineEdit_8.text()
-        id_num = int(id_raw) if id_raw.isdigit() else None
+        id_num = int(id_raw) if id_raw.isdigit() else ''
 
-        employee_list = Employee.get_list(name=name, surname=surname, age=age, id_num=id_num)
-        # Column names to be set on the app table
-        column_names = ['ID', 'Name', 'Surname', 'Age']
-        # Setting the table rows and columns
-        self.ui.tableWidget.setRowCount(len(employee_list))
-        self.ui.tableWidget.setColumnCount(len(column_names))
-        self.ui.tableWidget.setHorizontalHeaderLabels(column_names)
-        # Populating the table with employee data
-        for row_idx, employee in enumerate(employee_list):
-            for col_idx, value in enumerate([employee.name, employee.surname, employee.age, employee.id]):
-                item = QTableWidgetItem(str(value))
-                self.ui.tableWidget.setItem(row_idx, col_idx, item)
+        if any(item != '' for item in (name, surname, age, id_num)):
+            employee_list = Employee.get_list(name=name, surname=surname, age=age, id_num=id_num)
+            # Column names to be set on the app table
+            column_names = ['ID', 'Name', 'Surname', 'Age']
+            # Setting the table rows and columns
+            self.ui.tableWidget.setRowCount(len(employee_list))
+            self.ui.tableWidget.setColumnCount(len(column_names))
+            self.ui.tableWidget.setHorizontalHeaderLabels(column_names)
+            # Populating the table with employee data
+            for row_idx, employee in enumerate(employee_list):
+                for col_idx, value in enumerate([employee.name, employee.surname, employee.age, employee.id]):
+                    item = QTableWidgetItem(str(value))
+                    self.ui.tableWidget.setItem(row_idx, col_idx, item)
+        else:
+            self.ui.label_11.setStyleSheet("color: red")
+            self.ui.label_11.setText("No search parameter was provided")
 
     def update_employee(self):
         """Update an employee in the database based on the provided parameters"""
